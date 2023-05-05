@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: false}));//Apenas dados simples
 app.use(bodyParser.json());//json de entrada no body
 
 app.use((req,res,next)=>{
-    res.header('Access-Control-Allow-Origin', '*');// Caso fosse em mum servidor específico, colar a url... (o '*' significa: TODOS)
+    res.header('Access-Control-Allow-Origin', '*');// Caso fosse em um servidor específico, colar a url... (o '*' significa: TODOS)
     res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requerested-With,Content-Type, Accept, Authorization'

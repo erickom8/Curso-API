@@ -42,7 +42,7 @@ router.get('/:id_produtos', (req, res, next)=>{
         if(error) {return res.status(500).send({error : error})}
         conn.query(
             'SELECT * FROM produtos WHERE id_produtos = ?;',
-            [req.params.id_produto],
+            [req.params.id_produtos],
             (error, resultado, fields) => {
                 if(error) {return res.status(500).send({error : error})}
                 return res.status(200).send({response: resultado})
@@ -58,12 +58,12 @@ router.patch('/', (req, res, next)=>{
         conn.query(
             `UPDATE produtos 
                 SET nome        = ?,
-                    preco       = ?,
+                    preco       = ?
               WHERE id_produtos = ?`,
             [
                 req.body.nome, 
                 req.body.preco, 
-                req.body.id_produto
+                req.body.id_produtos
             ],
             (error, resultado, field) =>{
                 conn.release();
@@ -81,9 +81,32 @@ router.patch('/', (req, res, next)=>{
 
 //EXCLUI UM PRODUTO
 router.delete('/', (req, res, next)=>{
-    res.status(201).send({
-        mensagem: 'Produto excluído'
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            'DELETE FROM produtos WHERE id_produtos = ?;', 
+            [req.body.id_produtos],
+            (error, results, fields) => {
+                conn.release();  
+                if (error) { return res.status(500).send({ error: error }) }
+
+                res.status(202).send({
+                    mensagem: 'Produto removido com sucesso!'
+                });
+                    // produtoDeletado: {
+                    //     id_produtos: req.body.id_produtos,
+                    //     nome: req.body.nome, 
+                    //     preco: req.body.preco, 
+                    //     request: {
+                    //         tipo: 'Delete', 
+                    //         descricao: 'Remove um produto.', 
+                    //         url: 'http://localhost:3000/produtos'
+                    //     }
+                    // }
+            }
+        )
     });
 });
+
 
 module.exports = router;
